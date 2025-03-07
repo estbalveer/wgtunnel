@@ -45,6 +45,7 @@ import com.zaneschepke.wireguardautotunnel.ui.common.navigation.BottomNavItem
 import com.zaneschepke.wireguardautotunnel.ui.common.navigation.LocalNavController
 import com.zaneschepke.wireguardautotunnel.ui.common.snackbar.CustomSnackBar
 import com.zaneschepke.wireguardautotunnel.ui.common.snackbar.SnackbarControllerProvider
+import com.zaneschepke.wireguardautotunnel.ui.screens.LoginScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.ConfigScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.MainScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.OptionsScreen
@@ -152,11 +153,14 @@ class MainActivity : AppCompatActivity() {
 									exitTransition = { fadeOut(tween(Constants.TRANSITION_ANIMATION_TIME)) },
 									startDestination = (if (appUiState.generalState.isPinLockEnabled) Route.Lock else Route.Main),
 								) {
+
 									composable<Route.Main> {
 										MainScreen(
 											uiState = appUiState,
 										)
 									}
+									composable<Route.Login> { LoginScreen(navController) }
+
 									composable<Route.Settings> {
 										SettingsScreen(
 											appViewModel = viewModel,

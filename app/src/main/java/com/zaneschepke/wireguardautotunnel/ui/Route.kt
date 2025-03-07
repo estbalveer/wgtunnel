@@ -25,6 +25,9 @@ sealed class Route {
 	data object Main : Route()
 
 	@Serializable
+	data object Login : Route()
+
+	@Serializable
 	data class TunnelOptions(
 		val id: Int,
 	) : Route()

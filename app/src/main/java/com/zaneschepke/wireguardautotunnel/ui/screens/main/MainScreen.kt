@@ -37,10 +37,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.compose.composable
 import com.zaneschepke.wireguardautotunnel.R
 import com.zaneschepke.wireguardautotunnel.domain.entity.TunnelConf
 import com.zaneschepke.wireguardautotunnel.domain.state.TunnelState
-import com.zaneschepke.wireguardautotunnel.ui.state.AppUiState
 import com.zaneschepke.wireguardautotunnel.ui.Route
 import com.zaneschepke.wireguardautotunnel.ui.common.NestedScrollListener
 import com.zaneschepke.wireguardautotunnel.ui.common.dialog.InfoDialog
@@ -48,13 +48,13 @@ import com.zaneschepke.wireguardautotunnel.ui.common.functions.rememberFileImpor
 import com.zaneschepke.wireguardautotunnel.ui.common.navigation.LocalNavController
 import com.zaneschepke.wireguardautotunnel.ui.common.navigation.TopNavBar
 import com.zaneschepke.wireguardautotunnel.ui.common.permission.vpn.withVpnPermission
-import com.zaneschepke.wireguardautotunnel.ui.common.permission.withIgnoreBatteryOpt
 import com.zaneschepke.wireguardautotunnel.ui.common.snackbar.SnackbarController
-import com.zaneschepke.wireguardautotunnel.ui.screens.main.components.AutoTunnelRowItem
+import com.zaneschepke.wireguardautotunnel.ui.screens.LoginScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.components.GettingStartedLabel
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.components.ScrollDismissFab
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.components.TunnelImportSheet
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.components.TunnelRowItem
+import com.zaneschepke.wireguardautotunnel.ui.state.AppUiState
 import com.zaneschepke.wireguardautotunnel.util.Constants
 import com.zaneschepke.wireguardautotunnel.util.extensions.isRunningOnTv
 import com.zaneschepke.wireguardautotunnel.util.extensions.openWebUrl
@@ -88,15 +88,6 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 	val startAutoTunnel = withVpnPermission<Unit> { viewModel.onToggleAutoTunnel() }
 	val startTunnel = withVpnPermission<TunnelConf> {
 		viewModel.onTunnelStart(it)
-	}
-
-	val autoTunnelToggleBattery = withIgnoreBatteryOpt(uiState.generalState.isBatteryOptimizationDisableShown) {
-		if (!uiState.generalState.isBatteryOptimizationDisableShown) viewModel.setBatteryOptimizeDisableShown()
-		if (uiState.appSettings.isKernelEnabled) {
-			viewModel.onToggleAutoTunnel()
-		} else {
-			startAutoTunnel.invoke(Unit)
-		}
 	}
 
 	val nestedScrollConnection = remember {
@@ -159,6 +150,7 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 					)
 				}, isVisible = isFabVisible, onClick = {
 					showBottomSheet = true
+					navController.navigate(Route.Login)
 				})
 			}
 		},
@@ -214,12 +206,6 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 			if (uiState.tunnels.isEmpty()) {
 				item {
 					GettingStartedLabel(onClick = { context.openWebUrl(it) })
-				}
-			} else {
-				item {
-					AutoTunnelRowItem(uiState) {
-						autoTunnelToggleBattery.invoke()
-					}
 				}
 			}
 			items(
