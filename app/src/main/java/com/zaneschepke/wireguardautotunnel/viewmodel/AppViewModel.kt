@@ -93,7 +93,6 @@ constructor(
 		viewModelScope.launch {
 			initPin()
 			handleKillSwitchChange()
-			initServices()
 			launch {
 				initTunnels()
 			}
@@ -120,40 +119,8 @@ constructor(
 		if (isPinEnabled) PinManager.initialize(WireGuardAutoTunnel.instance)
 	}
 
-	private suspend fun initServices() {
-		withContext(ioDispatcher) {
-			appSettings.withData {
-				if (it.isAutoTunnelEnabled) serviceManager.startAutoTunnel(false)
-			}
-		}
-	}
-
-	fun onPinLockDisabled() = viewModelScope.launch(ioDispatcher) {
-		PinManager.clearPin()
-		appDataRepository.appState.setPinLockEnabled(false)
-	}
-
-	fun onPinLockEnabled() = viewModelScope.launch {
-		appDataRepository.appState.setPinLockEnabled(true)
-	}
-
 	fun setLocationDisclosureShown() = viewModelScope.launch {
 		appDataRepository.appState.setLocationDisclosureShown(true)
-	}
-
-	fun onToggleLocalLogging() = viewModelScope.launch(ioDispatcher) {
-		with(uiState.value.generalState) {
-			val toggledOn = !isLocalLogsEnabled
-			appDataRepository.appState.setLocalLogsEnabled(toggledOn)
-			if (!toggledOn) onLoggerStop()
-			_configurationChange.update {
-				true
-			}
-		}
-	}
-
-	private suspend fun onLoggerStop() {
-		logReader.deleteAndClearLogs()
 	}
 
 	fun onToggleAlwaysOnVPN() = viewModelScope.launch {

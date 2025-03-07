@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.TextUnit
 import androidx.core.location.LocationManagerCompat
 import com.zaneschepke.wireguardautotunnel.R
-import com.zaneschepke.wireguardautotunnel.core.service.tile.AutoTunnelControlTile
 import com.zaneschepke.wireguardautotunnel.core.service.tile.TunnelControlTile
 import com.zaneschepke.wireguardautotunnel.util.Constants
 
@@ -175,13 +174,6 @@ fun Context.requestTunnelTileServiceStateUpdate() {
 	TileService.requestListeningState(
 		this,
 		ComponentName(this, TunnelControlTile::class.java),
-	)
-}
-
-fun Context.requestAutoTunnelTileServiceUpdate() {
-	TileService.requestListeningState(
-		this,
-		ComponentName(this, AutoTunnelControlTile::class.java),
 	)
 }
 

@@ -6,9 +6,9 @@ import android.net.Uri
 import android.provider.OpenableColumns
 import androidx.lifecycle.viewModelScope
 import com.zaneschepke.wireguardautotunnel.R
-import com.zaneschepke.wireguardautotunnel.di.IoDispatcher
 import com.zaneschepke.wireguardautotunnel.core.service.ServiceManager
 import com.zaneschepke.wireguardautotunnel.core.tunnel.TunnelManager
+import com.zaneschepke.wireguardautotunnel.di.IoDispatcher
 import com.zaneschepke.wireguardautotunnel.domain.entity.AppSettings
 import com.zaneschepke.wireguardautotunnel.domain.entity.TunnelConf
 import com.zaneschepke.wireguardautotunnel.domain.repository.AppDataRepository
@@ -46,7 +46,6 @@ constructor(
 		appSettings.withData { settings ->
 			tunnels.withData {
 				if (it.size == 1 || tunnel.isPrimaryTunnel) {
-					serviceManager.stopAutoTunnel()
 					resetTunnelSetting(settings)
 				}
 				appDataRepository.tunnels.delete(tunnel)
@@ -140,15 +139,11 @@ constructor(
 		}.onFailure {
 			Timber.Forest.e(it)
 			if (it is InvalidFileExtensionException) {
-				SnackbarController.Companion.showMessage(StringValue.StringResource(R.string.error_file_extension))
+				SnackbarController.showMessage(StringValue.StringResource(R.string.error_file_extension))
 			} else {
-				SnackbarController.Companion.showMessage(StringValue.StringResource(R.string.error_file_format))
+				SnackbarController.showMessage(StringValue.StringResource(R.string.error_file_format))
 			}
 		}
-	}
-
-	fun onToggleAutoTunnel() = viewModelScope.launch {
-		serviceManager.toggleAutoTunnel(false)
 	}
 
 	private suspend fun saveTunnelsFromZipUri(uri: Uri, context: Context) {
@@ -172,9 +167,6 @@ constructor(
 		}
 	}
 
-	fun setBatteryOptimizeDisableShown() = viewModelScope.launch {
-		appDataRepository.appState.setBatteryOptimizationDisableShown(true)
-	}
 
 	private suspend fun saveTunnelFromConfUri(name: String, uri: Uri, context: Context) {
 		val stream = getInputStreamFromUri(uri, context) ?: throw FileReadException
@@ -238,7 +230,7 @@ constructor(
 			val tunnelConf = TunnelConf.tunnelConfigFromAmConfig(amConfig, makeTunnelNameUnique(generateQrCodeDefaultName(config)))
 			saveTunnel(tunnelConf)
 		}.onFailure {
-			SnackbarController.Companion.showMessage(StringValue.StringResource(R.string.error_file_format))
+			SnackbarController.showMessage(StringValue.StringResource(R.string.error_file_format))
 		}
 	}
 }

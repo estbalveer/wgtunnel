@@ -64,7 +64,6 @@ import com.zaneschepke.wireguardautotunnel.ui.common.config.ConfigurationTextBox
 import com.zaneschepke.wireguardautotunnel.ui.common.label.GroupLabel
 import com.zaneschepke.wireguardautotunnel.ui.common.navigation.LocalNavController
 import com.zaneschepke.wireguardautotunnel.ui.common.navigation.TopNavBar
-import com.zaneschepke.wireguardautotunnel.ui.common.prompt.AuthorizationPrompt
 import com.zaneschepke.wireguardautotunnel.ui.common.snackbar.SnackbarController
 import com.zaneschepke.wireguardautotunnel.ui.enums.InterfaceActions
 import com.zaneschepke.wireguardautotunnel.ui.enums.PeerActions
@@ -116,27 +115,6 @@ fun ConfigScreen(tunnelConf: TunnelConf?, appViewModel: AppViewModel) {
 
 	val keyboardActions = KeyboardActions(onDone = { keyboardController?.hide() })
 	val keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done)
-
-	if (showAuthPrompt) {
-		AuthorizationPrompt(
-			onSuccess = {
-				showAuthPrompt = false
-				isAuthenticated = true
-			},
-			onError = {
-				showAuthPrompt = false
-				snackbar.showMessage(
-					context.getString(R.string.error_authentication_failed),
-				)
-			},
-			onFailure = {
-				showAuthPrompt = false
-				snackbar.showMessage(
-					context.getString(R.string.error_authorization_failed),
-				)
-			},
-		)
-	}
 
 	LaunchedEffect(popBackStack) {
 		if (popBackStack) navController.popBackStack()

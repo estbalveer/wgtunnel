@@ -44,8 +44,6 @@ import com.zaneschepke.wireguardautotunnel.ui.common.button.ScaledSwitch
 import com.zaneschepke.wireguardautotunnel.ui.common.button.surface.SelectionItem
 import com.zaneschepke.wireguardautotunnel.ui.common.button.surface.SurfaceSelectionGroupButton
 import com.zaneschepke.wireguardautotunnel.ui.common.navigation.LocalNavController
-import com.zaneschepke.wireguardautotunnel.ui.common.prompt.AuthorizationPrompt
-import com.zaneschepke.wireguardautotunnel.ui.common.snackbar.SnackbarController
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.components.ForwardButton
 import com.zaneschepke.wireguardautotunnel.ui.state.AppUiState
 import com.zaneschepke.wireguardautotunnel.util.extensions.isRunningOnTv
@@ -61,7 +59,6 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), appViewModel:
 	val context = LocalContext.current
 	val navController = LocalNavController.current
 	val focusManager = LocalFocusManager.current
-	val snackbar = SnackbarController.current
 	val isRunningOnTv = remember { context.isRunningOnTv() }
 
 	val interactionSource = remember { MutableInteractionSource() }
@@ -70,24 +67,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), appViewModel:
 	var showExportSheet by remember { mutableStateOf(false) }
 
 	if (showAuthPrompt) {
-		AuthorizationPrompt(
-			onSuccess = {
-				showAuthPrompt = false
-				showExportSheet = true
-			},
-			onError = { _ ->
-				showAuthPrompt = false
-				snackbar.showMessage(
-					context.getString(R.string.error_authentication_failed),
-				)
-			},
-			onFailure = {
-				showAuthPrompt = false
-				snackbar.showMessage(
-					context.getString(R.string.error_authorization_failed),
-				)
-			},
-		)
+		showAuthPrompt = false
+		showExportSheet = true
 	}
 
 	if (showExportSheet) {

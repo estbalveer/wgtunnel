@@ -33,7 +33,7 @@ class NotificationActionReceiver : BroadcastReceiver() {
 	override fun onReceive(context: Context, intent: Intent) {
 		applicationScope.launch {
 			when (intent.action) {
-				NotificationAction.AUTO_TUNNEL_OFF.name -> serviceManager.stopAutoTunnel()
+				NotificationAction.AUTO_TUNNEL_OFF.name -> {}
 				NotificationAction.TUNNEL_OFF.name -> {
 					val tunnelId = intent.getIntExtra(NotificationManager.EXTRA_ID, 0)
 					if (tunnelId == 0) return@launch tunnelManager.stopTunnel()

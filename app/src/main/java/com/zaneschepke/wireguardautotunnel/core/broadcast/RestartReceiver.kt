@@ -46,12 +46,10 @@ class RestartReceiver : BroadcastReceiver() {
 		Timber.d("RestartReceiver triggered with action: ${intent.action}")
 		applicationScope.launch(ioDispatcher) {
 			serviceManager.updateTunnelTile()
-			serviceManager.updateAutoTunnelTile()
 			val settings = appDataRepository.settings.get()
 			if (settings.isRestoreOnBootEnabled) {
 				if (settings.isAutoTunnelEnabled && !serviceManager.autoTunnelActive.value) {
 					Timber.d("Starting auto-tunnel on boot/update")
-					serviceManager.startAutoTunnel(true)
 				} else {
 					Timber.d("Restoring previous tunnel state")
 					tunnelManager.restorePreviousState()
