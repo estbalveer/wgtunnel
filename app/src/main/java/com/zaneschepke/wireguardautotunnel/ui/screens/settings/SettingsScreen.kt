@@ -16,7 +16,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ViewQuilt
 import androidx.compose.material.icons.filled.FolderZip
 import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material.icons.outlined.Pin
 import androidx.compose.material.icons.outlined.Restore
 import androidx.compose.material.icons.outlined.VpnKeyOff
 import androidx.compose.material.icons.outlined.VpnLock
@@ -55,7 +54,6 @@ import com.zaneschepke.wireguardautotunnel.util.extensions.scaledHeight
 import com.zaneschepke.wireguardautotunnel.util.extensions.scaledWidth
 import com.zaneschepke.wireguardautotunnel.viewmodel.AppViewModel
 import com.zaneschepke.wireguardautotunnel.viewmodel.SettingsViewModel
-import xyz.teamgravity.pin_lock_compose.PinManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -262,36 +260,6 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), appViewModel:
 					},
 					trailing = {
 						ForwardButton { context.launchNotificationSettings() }
-					},
-				),
-				SelectionItem(
-					Icons.Outlined.Pin,
-					title = {
-						Text(
-							stringResource(R.string.enable_app_lock),
-							style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface),
-						)
-					},
-					trailing = {
-						ScaledSwitch(
-							uiState.generalState.isPinLockEnabled,
-							onClick = {
-								if (uiState.generalState.isPinLockEnabled) {
-									appViewModel.onPinLockDisabled()
-								} else {
-									PinManager.initialize(context)
-									navController.navigate(Route.Lock)
-								}
-							},
-						)
-					},
-					onClick = {
-						if (uiState.generalState.isPinLockEnabled) {
-							appViewModel.onPinLockDisabled()
-						} else {
-							PinManager.initialize(context)
-							navController.navigate(Route.Lock)
-						}
 					},
 				),
 			),

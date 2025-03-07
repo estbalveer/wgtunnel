@@ -47,9 +47,6 @@ import com.zaneschepke.wireguardautotunnel.util.extensions.isValidIpv4orIpv6Addr
 import com.zaneschepke.wireguardautotunnel.util.extensions.scaledHeight
 import com.zaneschepke.wireguardautotunnel.util.extensions.scaledWidth
 import com.zaneschepke.wireguardautotunnel.viewmodel.TunnelOptionsViewModel
-import kotlin.text.isBlank
-import kotlin.text.isNullOrBlank
-import kotlin.text.toLong
 
 @Composable
 fun OptionsScreen(tunnelConf: TunnelConf, appUiState: AppUiState, viewModel: TunnelOptionsViewModel = hiltViewModel()) {
@@ -121,10 +118,8 @@ fun OptionsScreen(tunnelConf: TunnelConf, appUiState: AppUiState, viewModel: Tun
 							)
 						},
 						onClick = {
-							navController.navigate(Route.TunnelAutoTunnel(id = tunnelConf.id))
 						},
 						trailing = {
-							ForwardButton { navController.navigate(Route.TunnelAutoTunnel(id = tunnelConf.id)) }
 						},
 					),
 					SelectionItem(

@@ -33,23 +33,12 @@ sealed class Route {
 	) : Route()
 
 	@Serializable
-	data object Lock : Route()
-
-	@Serializable
-	data object Scanner : Route()
-
-	@Serializable
 	data class Config(
 		val id: Int,
 	) : Route()
 
 	@Serializable
 	data class SplitTunnel(
-		val id: Int,
-	) : Route()
-
-	@Serializable
-	data class TunnelAutoTunnel(
 		val id: Int,
 	) : Route()
 }

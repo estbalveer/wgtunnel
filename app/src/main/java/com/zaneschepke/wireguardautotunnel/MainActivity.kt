@@ -49,10 +49,7 @@ import com.zaneschepke.wireguardautotunnel.ui.screens.LoginScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.ConfigScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.MainScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.OptionsScreen
-import com.zaneschepke.wireguardautotunnel.ui.screens.main.PinLockScreen
-import com.zaneschepke.wireguardautotunnel.ui.screens.main.ScannerScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.SplitTunnelScreen
-import com.zaneschepke.wireguardautotunnel.ui.screens.main.TunnelAutoTunnelScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.AppearanceScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.DisplayScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.KillSwitchScreen
@@ -151,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 									navController,
 									enterTransition = { fadeIn(tween(Constants.TRANSITION_ANIMATION_TIME)) },
 									exitTransition = { fadeOut(tween(Constants.TRANSITION_ANIMATION_TIME)) },
-									startDestination = (if (appUiState.generalState.isPinLockEnabled) Route.Lock else Route.Main),
+									startDestination = (Route.Main),
 								) {
 
 									composable<Route.Main> {
@@ -191,12 +188,6 @@ class MainActivity : AppCompatActivity() {
 											OptionsScreen(config, appUiState)
 										}
 									}
-									composable<Route.Lock> {
-										PinLockScreen(viewModel)
-									}
-									composable<Route.Scanner> {
-										ScannerScreen()
-									}
 									composable<Route.KillSwitch> {
 										KillSwitchScreen(appUiState, viewModel)
 									}
@@ -204,12 +195,6 @@ class MainActivity : AppCompatActivity() {
 										val args = backStack.toRoute<Route.SplitTunnel>()
 										appUiState.tunnels.firstOrNull { it.id == args.id }?.let {
 											SplitTunnelScreen(it, viewModel)
-										}
-									}
-									composable<Route.TunnelAutoTunnel> { backStack ->
-										val args = backStack.toRoute<Route.TunnelOptions>()
-										appUiState.tunnels.firstOrNull { it.id == args.id }?.let {
-											TunnelAutoTunnelScreen(it, appUiState.appSettings)
 										}
 									}
 								}

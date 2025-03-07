@@ -8,7 +8,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ContentPasteGo
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.FileOpen
-import androidx.compose.material.icons.filled.QrCode
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -30,7 +29,6 @@ fun TunnelImportSheet(
 	show: Boolean,
 	onDismiss: () -> Unit,
 	onFileClick: () -> Unit,
-	onQrClick: () -> Unit,
 	onManualImportClick: () -> Unit,
 	onClipboardClick: () -> Unit,
 ) {
@@ -65,27 +63,6 @@ fun TunnelImportSheet(
 				)
 			}
 			if (!context.isRunningOnTv()) {
-				HorizontalDivider()
-				Row(
-					modifier =
-					Modifier
-						.fillMaxWidth()
-						.clickable {
-							onDismiss()
-							onQrClick()
-						}
-						.padding(10.dp),
-				) {
-					Icon(
-						Icons.Filled.QrCode,
-						contentDescription = stringResource(id = R.string.qr_scan),
-						modifier = Modifier.padding(10.dp),
-					)
-					Text(
-						stringResource(id = R.string.add_from_qr),
-						modifier = Modifier.padding(10.dp),
-					)
-				}
 				HorizontalDivider()
 				Row(
 					modifier =

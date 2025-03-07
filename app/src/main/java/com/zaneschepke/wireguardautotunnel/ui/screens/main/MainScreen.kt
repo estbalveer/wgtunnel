@@ -1,7 +1,5 @@
 package com.zaneschepke.wireguardautotunnel.ui.screens.main
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -37,7 +35,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.navigation.compose.composable
 import com.zaneschepke.wireguardautotunnel.R
 import com.zaneschepke.wireguardautotunnel.domain.entity.TunnelConf
 import com.zaneschepke.wireguardautotunnel.domain.state.TunnelState
@@ -47,9 +44,7 @@ import com.zaneschepke.wireguardautotunnel.ui.common.dialog.InfoDialog
 import com.zaneschepke.wireguardautotunnel.ui.common.functions.rememberFileImportLauncherForResult
 import com.zaneschepke.wireguardautotunnel.ui.common.navigation.LocalNavController
 import com.zaneschepke.wireguardautotunnel.ui.common.navigation.TopNavBar
-import com.zaneschepke.wireguardautotunnel.ui.common.permission.vpn.withVpnPermission
 import com.zaneschepke.wireguardautotunnel.ui.common.snackbar.SnackbarController
-import com.zaneschepke.wireguardautotunnel.ui.screens.LoginScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.components.GettingStartedLabel
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.components.ScrollDismissFab
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.components.TunnelImportSheet
@@ -85,29 +80,20 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 		uiState.tunnels.sortedWith(compareBy(collator) { it.tunName })
 	}
 
-	val startAutoTunnel = withVpnPermission<Unit> { viewModel.onToggleAutoTunnel() }
-	val startTunnel = withVpnPermission<TunnelConf> {
-		viewModel.onTunnelStart(it)
-	}
-
 	val nestedScrollConnection = remember {
 		NestedScrollListener({ isFabVisible = false }, { isFabVisible = true })
 	}
 
-	val tunnelFileImportResultLauncher = rememberFileImportLauncherForResult(onNoFileExplorer = {
-		snackbar.showMessage(
-			context.getString(R.string.error_no_file_explorer),
-		)
-	}, onData = { data ->
-		viewModel.onTunnelFileSelected(data, context)
-	})
-
-	val requestPermissionLauncher = rememberLauncherForActivityResult(
-		ActivityResultContracts.RequestPermission(),
-	) { isGranted ->
-		if (!isGranted) return@rememberLauncherForActivityResult snackbar.showMessage("Camera permission required")
-		navController.navigate(Route.Scanner)
-	}
+	val tunnelFileImportResultLauncher = rememberFileImportLauncherForResult(
+            onNoFileExplorer = {
+                snackbar.showMessage(
+                        context.getString(R.string.error_no_file_explorer),
+                )
+            },
+            onData = { data ->
+                viewModel.onTunnelFileSelected(data, context)
+            },
+    )
 
 	if (showDeleteTunnelAlertDialog) {
 		InfoDialog(
@@ -125,7 +111,7 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 
 	fun onTunnelToggle(checked: Boolean, tunnel: TunnelConf) {
 		if (!checked) return viewModel.onTunnelStop(tunnel).let { }
-		if (uiState.appSettings.isKernelEnabled) viewModel.onTunnelStart(tunnel) else startTunnel(tunnel)
+		viewModel.onTunnelStart(tunnel)
 	}
 
 	Scaffold(
@@ -141,17 +127,21 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 		floatingActionButtonPosition = FabPosition.End,
 		floatingActionButton = {
 			if (!isRunningOnTv) {
-				ScrollDismissFab({
-					val icon = Icons.Filled.Add
-					Icon(
-						imageVector = icon,
-						contentDescription = icon.name,
-						tint = MaterialTheme.colorScheme.onPrimary,
-					)
-				}, isVisible = isFabVisible, onClick = {
-					showBottomSheet = true
-					navController.navigate(Route.Login)
-				})
+				ScrollDismissFab(
+                        {
+                            val icon = Icons.Filled.Add
+                            Icon(
+                                    imageVector = icon,
+                                    contentDescription = icon.name,
+                                    tint = MaterialTheme.colorScheme.onPrimary,
+                            )
+                        },
+                        isVisible = isFabVisible,
+                        onClick = {
+                            showBottomSheet = true
+//                            navController.navigate(Route.Login)
+                        },
+                )
 			}
 		},
 		topBar = {
@@ -160,9 +150,11 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 					showBack = false,
 					title = stringResource(R.string.app_name),
 					trailing = {
-						IconButton(onClick = {
-							showBottomSheet = true
-						}) {
+						IconButton(
+                                onClick = {
+                                    showBottomSheet = true
+                                },
+                        ) {
 							val icon = Icons.Outlined.Add
 							Icon(
 								imageVector = icon,
@@ -178,7 +170,6 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 			showBottomSheet,
 			onDismiss = { showBottomSheet = false },
 			onFileClick = { tunnelFileImportResultLauncher.launch(Constants.ALLOWED_TV_FILE_TYPES) },
-			onQrClick = { requestPermissionLauncher.launch(android.Manifest.permission.CAMERA) },
 			onClipboardClick = {
 				clipboard.getText()?.text?.let {
 					viewModel.onClipboardImport(it)
@@ -195,9 +186,11 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel(), uiState: AppUiState) 
 			verticalArrangement = Arrangement.spacedBy(5.dp, Alignment.Top),
 			modifier =
 			Modifier
-				.fillMaxSize().padding(padding).padding(top = 24.dp.scaledHeight())
-				.overscroll(ScrollableDefaults.overscrollEffect())
-				.nestedScroll(nestedScrollConnection),
+                    .fillMaxSize()
+                    .padding(padding)
+                    .padding(top = 24.dp.scaledHeight())
+                    .overscroll(ScrollableDefaults.overscrollEffect())
+                    .nestedScroll(nestedScrollConnection),
 			state = rememberLazyListState(0, uiState.tunnels.count()),
 			userScrollEnabled = true,
 			reverseLayout = false,
