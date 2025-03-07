@@ -61,7 +61,6 @@
     <string name="cancel">Cancel</string>
     <string name="error_authentication_failed">Authentication failed</string>
     <string name="error_authorization_failed">Failed to authorize</string>
-    <string name="enabled_app_shortcuts">Enable app shortcuts</string>
     <string name="export_configs">Export configs</string>
     <string name="unknown_error">Unknown error occurred</string>
     <string name="tunnel_on_wifi">Tunnel on untrusted wifi</string>

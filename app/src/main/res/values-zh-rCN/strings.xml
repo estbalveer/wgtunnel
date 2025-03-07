@@ -31,7 +31,6 @@
     <string name="optional">(可选)</string>
     <string name="optional_no_recommend">(可选，不建议)</string>
     <string name="error_authorization_failed">验证失败</string>
-    <string name="enabled_app_shortcuts">创建桌面快捷方式</string>
     <string name="export_configs">导出设置</string>
     <string name="docs_description">阅读文档</string>
     <string name="email_description">给作者发邮件</string>

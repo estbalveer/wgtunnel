@@ -37,7 +37,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.zaneschepke.wireguardautotunnel.core.shortcut.ShortcutManager
 import com.zaneschepke.wireguardautotunnel.core.tunnel.TunnelManager
 import com.zaneschepke.wireguardautotunnel.domain.repository.AppStateRepository
 import com.zaneschepke.wireguardautotunnel.ui.Route
@@ -53,14 +52,12 @@ import com.zaneschepke.wireguardautotunnel.ui.screens.main.PinLockScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.ScannerScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.SplitTunnelScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.main.TunnelAutoTunnelScreen
-import com.zaneschepke.wireguardautotunnel.ui.screens.settings.AdvancedScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.AppearanceScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.DisplayScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.KillSwitchScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.LanguageScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.LocationDisclosureScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.SettingsScreen
-import com.zaneschepke.wireguardautotunnel.ui.screens.settings.autotunnel.AutoTunnelScreen
 import com.zaneschepke.wireguardautotunnel.ui.theme.WireguardAutoTunnelTheme
 import com.zaneschepke.wireguardautotunnel.util.Constants
 import com.zaneschepke.wireguardautotunnel.viewmodel.AppViewModel
@@ -76,9 +73,6 @@ class MainActivity : AppCompatActivity() {
 
 	@Inject
 	lateinit var tunnelManager: TunnelManager
-
-	@Inject
-	lateinit var shortcutManager: ShortcutManager
 
 	override fun onCreate(savedInstanceState: Bundle?) {
 		enableEdgeToEdge(
@@ -114,13 +108,6 @@ class MainActivity : AppCompatActivity() {
 
 			LaunchedEffect(Unit) {
 				viewModel.getEmitSplitTunnelApps(this@MainActivity)
-			}
-
-			with(appUiState.appSettings) {
-				LaunchedEffect(isShortcutsEnabled) {
-					if (!isShortcutsEnabled) return@LaunchedEffect shortcutManager.removeShortcuts()
-					shortcutManager.addShortcuts()
-				}
 			}
 
 			CompositionLocalProvider(LocalNavController provides navController) {
@@ -179,11 +166,6 @@ class MainActivity : AppCompatActivity() {
 									composable<Route.LocationDisclosure> {
 										LocationDisclosureScreen(viewModel, appUiState)
 									}
-									composable<Route.AutoTunnel> {
-										AutoTunnelScreen(
-											appUiState.appSettings,
-										)
-									}
 									composable<Route.Appearance> {
 										AppearanceScreen()
 									}
@@ -192,9 +174,6 @@ class MainActivity : AppCompatActivity() {
 									}
 									composable<Route.Display> {
 										DisplayScreen(appUiState)
-									}
-									composable<Route.AutoTunnelAdvanced> {
-										AdvancedScreen(appUiState.appSettings, viewModel)
 									}
 									composable<Route.Config> { backStack ->
 										val args = backStack.toRoute<Route.Config>()

@@ -13,7 +13,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -37,10 +36,6 @@ import com.zaneschepke.wireguardautotunnel.util.extensions.scaledWidth
 fun LocationDisclosureScreen(appViewModel: AppViewModel, appUiState: AppUiState) {
 	val context = LocalContext.current
 	val navController = LocalNavController.current
-
-	LaunchedEffect(Unit, appUiState) {
-		if (appUiState.generalState.isLocationDisclosureShown) navController.goFromRoot(Route.AutoTunnel)
-	}
 
 	Column(
 		horizontalAlignment = Alignment.CenterHorizontally,

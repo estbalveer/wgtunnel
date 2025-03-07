@@ -81,16 +81,6 @@
             android:screenOrientation="portrait"
             tools:replace="screenOrientation" />
 
-        <activity
-            android:name=".core.shortcut.ShortcutsActivity"
-            android:enabled="true"
-            android:exported="true"
-			android:noHistory="true"
-			android:excludeFromRecents="true"
-			android:finishOnTaskLaunch="true"
-			android:launchMode="singleInstance"
-            android:theme="@android:style/Theme.NoDisplay" />
-
 		<provider
 			android:name="androidx.core.content.FileProvider"
 			android:authorities="@string/provider"

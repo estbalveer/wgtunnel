@@ -216,16 +216,6 @@ constructor(
 		handleKillSwitchChange()
 	}
 
-	fun onToggleShortcutsEnabled() = viewModelScope.launch {
-		with(uiState.value.appSettings) {
-			appDataRepository.settings.save(
-				copy(
-					isShortcutsEnabled = !isShortcutsEnabled,
-				),
-			)
-		}
-	}
-
 	private fun saveKernelMode(enabled: Boolean) = viewModelScope.launch {
 		with(uiState.value.appSettings) {
 			appDataRepository.settings.save(

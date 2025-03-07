@@ -1,7 +1,6 @@
 package com.zaneschepke.wireguardautotunnel.ui.screens.settings
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,11 +14,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ViewQuilt
-import androidx.compose.material.icons.filled.AppShortcut
 import androidx.compose.material.icons.filled.FolderZip
-import androidx.compose.material.icons.outlined.Bolt
-import androidx.compose.material.icons.outlined.Code
-import androidx.compose.material.icons.outlined.FolderZip
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Pin
 import androidx.compose.material.icons.outlined.Restore
@@ -45,8 +40,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.zaneschepke.wireguardautotunnel.R
 import com.zaneschepke.wireguardautotunnel.domain.enums.ConfigType
-import com.zaneschepke.wireguardautotunnel.ui.state.AppUiState
-import com.zaneschepke.wireguardautotunnel.viewmodel.AppViewModel
 import com.zaneschepke.wireguardautotunnel.ui.Route
 import com.zaneschepke.wireguardautotunnel.ui.common.button.ScaledSwitch
 import com.zaneschepke.wireguardautotunnel.ui.common.button.surface.SelectionItem
@@ -55,11 +48,12 @@ import com.zaneschepke.wireguardautotunnel.ui.common.navigation.LocalNavControll
 import com.zaneschepke.wireguardautotunnel.ui.common.prompt.AuthorizationPrompt
 import com.zaneschepke.wireguardautotunnel.ui.common.snackbar.SnackbarController
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.components.ForwardButton
+import com.zaneschepke.wireguardautotunnel.ui.state.AppUiState
 import com.zaneschepke.wireguardautotunnel.util.extensions.isRunningOnTv
 import com.zaneschepke.wireguardautotunnel.util.extensions.launchNotificationSettings
 import com.zaneschepke.wireguardautotunnel.util.extensions.scaledHeight
 import com.zaneschepke.wireguardautotunnel.util.extensions.scaledWidth
-import com.zaneschepke.wireguardautotunnel.util.extensions.showToast
+import com.zaneschepke.wireguardautotunnel.viewmodel.AppViewModel
 import com.zaneschepke.wireguardautotunnel.viewmodel.SettingsViewModel
 import xyz.teamgravity.pin_lock_compose.PinManager
 
@@ -150,7 +144,9 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), appViewModel:
 		modifier =
 		Modifier
 			.verticalScroll(rememberScrollState())
-			.fillMaxSize().systemBarsPadding().imePadding()
+			.fillMaxSize()
+			.systemBarsPadding()
+			.imePadding()
 			.padding(top = 24.dp.scaledHeight())
 			.padding(bottom = 40.dp.scaledHeight())
 			.padding(horizontal = 24.dp.scaledWidth())
@@ -167,53 +163,8 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), appViewModel:
 				},
 			),
 	) {
-		val onAutoTunnelClick = {
-			if (!uiState.generalState.isLocationDisclosureShown) {
-				navController.navigate(Route.LocationDisclosure)
-			} else {
-				navController.navigate(Route.AutoTunnel)
-			}
-		}
-		SurfaceSelectionGroupButton(
-			listOf(
-				SelectionItem(
-					Icons.Outlined.Bolt,
-					title = { Text(stringResource(R.string.auto_tunneling), style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface)) },
-					description = {
-						Text(
-							stringResource(R.string.on_demand_rules),
-							style = MaterialTheme.typography.bodySmall.copy(MaterialTheme.colorScheme.outline),
-						)
-					},
-					onClick = {
-						onAutoTunnelClick()
-					},
-					trailing = {
-						ForwardButton(Modifier.focusable()) { onAutoTunnelClick() }
-					},
-				),
-			),
-		)
 		SurfaceSelectionGroupButton(
 			buildList {
-				add(
-					SelectionItem(
-						Icons.Filled.AppShortcut,
-						{
-							ScaledSwitch(
-								uiState.appSettings.isShortcutsEnabled,
-								onClick = { appViewModel.onToggleShortcutsEnabled() },
-							)
-						},
-						title = {
-							Text(
-								stringResource(R.string.enabled_app_shortcuts),
-								style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface),
-							)
-						},
-						onClick = { appViewModel.onToggleShortcutsEnabled() },
-					),
-				)
 				if (!isRunningOnTv) {
 					add(
 						SelectionItem(
@@ -285,7 +236,12 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), appViewModel:
 			listOf(
 				SelectionItem(
 					Icons.AutoMirrored.Outlined.ViewQuilt,
-					title = { Text(stringResource(R.string.appearance), style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface)) },
+					title = {
+						Text(
+							stringResource(R.string.appearance),
+							style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface),
+						)
+					},
 					onClick = {
 						navController.navigate(Route.Appearance)
 					},
@@ -295,7 +251,12 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), appViewModel:
 				),
 				SelectionItem(
 					Icons.Outlined.Notifications,
-					title = { Text(stringResource(R.string.notifications), style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface)) },
+					title = {
+						Text(
+							stringResource(R.string.notifications),
+							style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface),
+						)
+					},
 					onClick = {
 						context.launchNotificationSettings()
 					},
@@ -335,56 +296,5 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel(), appViewModel:
 				),
 			),
 		)
-
-		if (!isRunningOnTv) {
-			SurfaceSelectionGroupButton(
-				listOf(
-					SelectionItem(
-						Icons.Outlined.Code,
-						title = { Text(stringResource(R.string.kernel), style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface)) },
-						description = {
-							Text(
-								stringResource(R.string.use_kernel),
-								style = MaterialTheme.typography.bodySmall.copy(MaterialTheme.colorScheme.outline),
-							)
-						},
-						trailing = {
-							ScaledSwitch(
-								uiState.appSettings.isKernelEnabled,
-								onClick = { appViewModel.onToggleKernelMode() },
-								enabled = !(
-									uiState.appSettings.isAutoTunnelEnabled ||
-										uiState.appSettings.isAlwaysOnVpnEnabled ||
-										uiState.activeTunnels.isNotEmpty()
-									),
-							)
-						},
-						onClick = {
-							appViewModel.onToggleKernelMode()
-						},
-					),
-				),
-			)
-		}
-
-		if (!isRunningOnTv) {
-			SurfaceSelectionGroupButton(
-				listOf(
-					SelectionItem(
-						Icons.Outlined.FolderZip,
-						title = {
-							Text(
-								stringResource(R.string.export_configs),
-								style = MaterialTheme.typography.bodyMedium.copy(MaterialTheme.colorScheme.onSurface),
-							)
-						},
-						onClick = {
-							if (uiState.tunnels.isEmpty()) return@SelectionItem context.showToast(R.string.tunnel_required)
-							showAuthPrompt = true
-						},
-					),
-				),
-			)
-		}
 	}
 }
