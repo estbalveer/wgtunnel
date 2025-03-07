@@ -4,9 +4,6 @@ import kotlinx.serialization.Serializable
 
 sealed class Route {
 	@Serializable
-	data object Support : Route()
-
-	@Serializable
 	data object Settings : Route()
 
 	@Serializable
@@ -58,7 +55,4 @@ sealed class Route {
 	data class TunnelAutoTunnel(
 		val id: Int,
 	) : Route()
-
-	@Serializable
-	data object Logs : Route()
 }

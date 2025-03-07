@@ -19,7 +19,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
-import androidx.compose.material.icons.rounded.QuestionMark
 import androidx.compose.material.icons.rounded.Settings
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -62,8 +61,6 @@ import com.zaneschepke.wireguardautotunnel.ui.screens.settings.LanguageScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.LocationDisclosureScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.SettingsScreen
 import com.zaneschepke.wireguardautotunnel.ui.screens.settings.autotunnel.AutoTunnelScreen
-import com.zaneschepke.wireguardautotunnel.ui.screens.support.LogsScreen
-import com.zaneschepke.wireguardautotunnel.ui.screens.support.SupportScreen
 import com.zaneschepke.wireguardautotunnel.ui.theme.WireguardAutoTunnelTheme
 import com.zaneschepke.wireguardautotunnel.util.Constants
 import com.zaneschepke.wireguardautotunnel.viewmodel.AppViewModel
@@ -157,11 +154,6 @@ class MainActivity : AppCompatActivity() {
 											route = Route.Settings,
 											icon = Icons.Rounded.Settings,
 										),
-										BottomNavItem(
-											name = stringResource(R.string.support),
-											route = Route.Support,
-											icon = Icons.Rounded.QuestionMark,
-										),
 									),
 								)
 							},
@@ -201,14 +193,8 @@ class MainActivity : AppCompatActivity() {
 									composable<Route.Display> {
 										DisplayScreen(appUiState)
 									}
-									composable<Route.Support> {
-										SupportScreen(appUiState, viewModel)
-									}
 									composable<Route.AutoTunnelAdvanced> {
 										AdvancedScreen(appUiState.appSettings, viewModel)
-									}
-									composable<Route.Logs> {
-										LogsScreen()
 									}
 									composable<Route.Config> { backStack ->
 										val args = backStack.toRoute<Route.Config>()
